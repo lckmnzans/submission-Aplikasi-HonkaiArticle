@@ -1,4 +1,4 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
+@file:OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class)
 
 package com.submission.apphi.ui.screen
 
@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.size
@@ -55,6 +54,7 @@ import com.submission.apphi.ui.theme.AppHiTheme
 import com.submission.appjetpack.model.CharactersData
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppHiMain(
     modifier: Modifier = Modifier,
@@ -62,52 +62,59 @@ fun AppHiMain(
     Scaffold(
         topBar = { TopBar() }
     ) { innerPadding ->
-        Box(modifier = modifier
-            .padding(innerPadding)
-            .fillMaxSize()) {
-            val scope = rememberCoroutineScope()
-            val listState = rememberLazyListState()
-            val showButton: Boolean by remember {
-                derivedStateOf { listState.firstVisibleItemIndex > 0 }
-            }
-            LazyColumn(
-                state = listState,
-                contentPadding = PaddingValues(bottom = 80.dp)
-            ) {
-                items(CharactersData.characters, key = { it.id }) { character ->
-                    CharacterListItem(
-                        name = character.name,
-                        ranking = character.ranking,
-                        avtUrl = character.avtUrl,
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                }
-            }
-            AnimatedVisibility(
-                visible = showButton,
-                enter = fadeIn() + slideInVertically(),
-                exit = fadeOut() + slideOutVertically(),
-                modifier = Modifier
-                    .padding(bottom = 30.dp)
-                    .align(Alignment.BottomCenter)
-            ) {
-                ScrollToTopButton(
-                    onClick = {
-                        scope.launch {
-                            listState.scrollToItem(index = 0)
-                        }
-                    }
-                )
-            }
-        }
+        MainScreen(innerPadding)
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun JetCharacterAppPreview() {
+fun AppHiMainPreview(
+    modifier: Modifier = Modifier,
+) {
     AppHiTheme {
         AppHiMain()
+    }
+}
+
+@Composable
+fun MainScreen(paddingValues: PaddingValues) {
+    Box(modifier = Modifier
+        .padding(paddingValues)
+        .fillMaxSize()) {
+        val scope = rememberCoroutineScope()
+        val listState = rememberLazyListState()
+        val showButton: Boolean by remember {
+            derivedStateOf { listState.firstVisibleItemIndex > 0 }
+        }
+        LazyColumn(
+            state = listState,
+            contentPadding = PaddingValues(bottom = 80.dp)
+        ) {
+            items(CharactersData.characters, key = { it.id }) { character ->
+                CharacterListItem(
+                    name = character.name,
+                    ranking = character.ranking,
+                    avtUrl = character.avtUrl,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        }
+        AnimatedVisibility(
+            visible = showButton,
+            enter = fadeIn() + slideInVertically(),
+            exit = fadeOut() + slideOutVertically(),
+            modifier = Modifier
+                .padding(bottom = 30.dp)
+                .align(Alignment.BottomCenter)
+        ) {
+            ScrollToTopButton(
+                onClick = {
+                    scope.launch {
+                        listState.scrollToItem(index = 0)
+                    }
+                }
+            )
+        }
     }
 }
 
@@ -120,7 +127,9 @@ fun CharacterListItem(
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier.clickable {}
+        modifier = modifier
+            .clickable
+            {}
     ) {
         AsyncImage(
             model = avtUrl,
@@ -129,7 +138,6 @@ fun CharacterListItem(
             modifier = Modifier
                 .padding(8.dp)
                 .requiredHeight(height = 80.dp)
-                .offset(x = 0.dp)
                 .clip(ParallelogramShape(angle = 0.1f, translationX = 0f))
         )
         Spacer(modifier = Modifier.width(8.dp))
@@ -170,14 +178,14 @@ fun ScrollToTopButton(
 }
 
 @Composable
-fun TopBar(
+private fun TopBar(
     modifier: Modifier = Modifier,
 ) {
     TopAppBar(
         title = { Text("HI3d Char") },
         actions = {
             IconButton(onClick = { /* doSomething() */ }) {
-                Icon(Icons.Default.AccountCircle, contentDescription = "Localized description", Modifier.size(50.dp))
+                Icon(Icons.Default.AccountCircle, contentDescription = "to About Page", Modifier.size(50.dp))
             }
         }
     )
