@@ -30,15 +30,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.submission.apphi.R
 import com.submission.apphi.ui.theme.AppHiTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppHiAbout(
+    navController: NavHostController,
     modifier: Modifier = Modifier,
 ) {
-    Scaffold(topBar = { TopBar() }) { innerPadding ->
+    Scaffold(topBar = { TopBar(navController) }) { innerPadding ->
         ProfileScreen(innerPadding)
     }
 }
@@ -47,7 +49,7 @@ fun AppHiAbout(
 @Composable
 fun AppHiAboutPreview() {
     AppHiTheme {
-        AppHiAbout()
+        //
     }
 }
 
@@ -95,12 +97,13 @@ fun ProfileScreen(padding: PaddingValues) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun TopBar(
+    navController: NavHostController,
     modifier: Modifier = Modifier,
     ) {
     TopAppBar(
         title = { Text(text = "Profile") },
         navigationIcon = {
-            IconButton(onClick = { /* Handle back navigation */ }) {
+            IconButton(onClick = { navController.navigateUp() }) {
                 Icon(Icons.Default.ArrowBack, contentDescription = "Back")
             }
         }
