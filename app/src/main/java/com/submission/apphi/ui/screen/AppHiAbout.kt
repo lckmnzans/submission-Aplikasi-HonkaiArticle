@@ -101,7 +101,7 @@ private fun TopBar(
     modifier: Modifier = Modifier,
     ) {
     TopAppBar(
-        title = { Text(text = "Profile") },
+        title = { Text(text = "About me") },
         navigationIcon = {
             IconButton(onClick = { navController.navigateUp() }) {
                 Icon(Icons.Default.ArrowBack, contentDescription = "Back")

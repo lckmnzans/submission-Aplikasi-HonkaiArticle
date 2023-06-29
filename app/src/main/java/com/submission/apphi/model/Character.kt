@@ -1,4 +1,4 @@
-package com.submission.appjetpack.model
+package com.submission.apphi.model
 
 data class Character(
     val id: String,
@@ -6,5 +6,6 @@ data class Character(
     val ranking: String,
     val genes: String,
     val avtUrl: String,
-    val imgUrl: String
+    val imgUrl: String,
+    val desc: String
 )

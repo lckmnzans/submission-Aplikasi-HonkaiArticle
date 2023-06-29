@@ -7,7 +7,6 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,7 +25,6 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.KeyboardArrowUp
-import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
@@ -42,7 +40,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
@@ -53,8 +50,9 @@ import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.submission.apphi.ParallelogramShape
 import com.submission.apphi.R
-import com.submission.appjetpack.model.CharactersData
+import com.submission.apphi.model.CharactersData
 import kotlinx.coroutines.launch
+import java.net.URLEncoder
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -65,12 +63,12 @@ fun AppHiMain(
     Scaffold(
         topBar = { TopBar(navController) }
     ) { innerPadding ->
-        MainScreen(innerPadding)
+        MainScreen(innerPadding, navController)
     }
 }
 
 @Composable
-fun MainScreen(paddingValues: PaddingValues) {
+fun MainScreen(paddingValues: PaddingValues, navController: NavHostController) {
     Box(modifier = Modifier
         .padding(paddingValues)
         .fillMaxSize()) {
@@ -88,6 +86,9 @@ fun MainScreen(paddingValues: PaddingValues) {
                     name = character.name,
                     ranking = character.ranking,
                     avtUrl = character.avtUrl,
+                    onItemClick = {
+                                  navController.navigate("detail/${character.name}/${character.ranking}/${URLEncoder.encode(character.imgUrl, "UTF-8")}/${URLEncoder.encode(character.desc, "UTF-8")}")
+                    },
                     modifier = Modifier.fillMaxWidth()
                 )
             }
@@ -116,13 +117,12 @@ fun CharacterListItem(
     name: String,
     ranking: String,
     avtUrl: String,
+    onItemClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier
-            .clickable
-            {}
+        modifier = modifier.clickable { onItemClick.invoke() }
     ) {
         AsyncImage(
             model = avtUrl,
@@ -176,7 +176,7 @@ private fun TopBar(
     modifier: Modifier = Modifier,
 ) {
     TopAppBar(
-        title = { Text("HI3d Char") },
+        title = { Text("Honkai Impact 3d") },
         actions = {
             IconButton(onClick = { navController.navigate("about") }) {
                 Icon(Icons.Default.AccountCircle, contentDescription = "to About Page", Modifier.size(50.dp))
